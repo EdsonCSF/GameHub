@@ -1,0 +1,89 @@
+{
+  "image": "bosses-blocos-tileset.webp",
+  "width": 1600,
+  "height": 888,
+  "columns": 4,
+  "rows": 3,
+  "cellWidth": 400,
+  "cellHeight": 296,
+  "emptyCell": 11,
+  "tiles": {
+    "titan": {
+      "index": 0,
+      "x": 0,
+      "y": 0,
+      "width": 400,
+      "height": 296
+    },
+    "wind": {
+      "index": 1,
+      "x": 400,
+      "y": 0,
+      "width": 400,
+      "height": 296
+    },
+    "forest": {
+      "index": 2,
+      "x": 800,
+      "y": 0,
+      "width": 400,
+      "height": 296
+    },
+    "serpent": {
+      "index": 3,
+      "x": 1200,
+      "y": 0,
+      "width": 400,
+      "height": 296
+    },
+    "storm": {
+      "index": 4,
+      "x": 0,
+      "y": 296,
+      "width": 400,
+      "height": 296
+    },
+    "ghost": {
+      "index": 5,
+      "x": 400,
+      "y": 296,
+      "width": 400,
+      "height": 296
+    },
+    "death": {
+      "index": 6,
+      "x": 800,
+      "y": 296,
+      "width": 400,
+      "height": 296
+    },
+    "doll": {
+      "index": 7,
+      "x": 1200,
+      "y": 296,
+      "width": 400,
+      "height": 296
+    },
+    "alien": {
+      "index": 8,
+      "x": 0,
+      "y": 592,
+      "width": 400,
+      "height": 296
+    },
+    "pixel": {
+      "index": 9,
+      "x": 400,
+      "y": 592,
+      "width": 400,
+      "height": 296
+    },
+    "drama": {
+      "index": 10,
+      "x": 800,
+      "y": 592,
+      "width": 400,
+      "height": 296
+    }
+  }
+}

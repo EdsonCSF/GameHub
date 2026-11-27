@@ -1,0 +1,10 @@
+Artes geradas para este projeto; textos de interface são desenhados pelo jogo.
+Prompt de interface: fantasy RPG, antique gold ornamental frames, ruby red attack
+button, purple amethyst action button, crimson/gold critical burst, teal/gold
+Perfect burst; empty centers for live text; transparent alpha; no characters.
+Folha gerada em 1536x1024, dividida em quatro PNGs preservando alpha.
+Prompt da cauda: single emerald serpent tail, gold filigree armor and silver blade,
+root top-center and tip bottom-center, vertical S curve, isolated transparent sprite.
+Referência: imagem da cauda enviada pelo usuário. Exportação em 384x576 PNG.
+Arquivos: img/ui-attack.png, img/ui-action.png, img/splash-critical.png,
+img/splash-perfect.png, img/serpent-tail.png.

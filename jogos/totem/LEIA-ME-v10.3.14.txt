@@ -1,0 +1,15 @@
+TOTEM ASCENSION — v10.3.14 — Titã em camadas
+
+Abra index.html para jogar. Abra TESTE-TITA.html para testar as animações sem alterar o save.
+
+Somente o Titã recebeu o novo sistema visual. Respiração, preparação dos punhos, golpe, recuperação e reação ao dano usam poses recriadas com o vídeo enviado como referência. Não são quadros extraídos literalmente do vídeo: a câmera e a plataforma do vídeo se deslocam e o dano recebido não aparece isolado.
+
+img/titan-states.png: atlas transparente, 4 colunas × 3 linhas. Linha 1: idle; linha 2: ataque; linha 3: dano recebido. Dimensão 1254 × 1254; cada célula lógica mede 313,5 × 418 pixels, lida diretamente pelo Canvas.
+img/titan-background.webp: cenário sem o personagem, com plataforma fixa.
+titan-animation.js: animação, sincronismo e fragmentos de rocha.
+
+Impacto aos 3100 ms no golpe de punhos e 3300 ms no golpe especial, seguindo os tempos de dano já existentes. Partículas e rochas surgem no topo da torre. Animação e arte não calculam dano. O especial usa o mesmo gesto de braços, com o tempo do ataque especial existente.
+
+Progressão, valores de dano, cargas, economia, mecânicas, saves e feedbacks da v10.3.12 preservados. Rodapés amarelos atualizados. Outros Bosses mantêm a apresentação anterior. Se os novos assets falharem, a arte anterior permanece disponível.
+
+Arte recriada por geração de imagens integrada: fundo remove apenas personagem e feixe, preservando cenário/plataforma; atlas recria 12 poses com fundo transparente, identidade vulcânica, dois braços e três estados. Primeira versão para validação visual em seu celular.

@@ -1,0 +1,23 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Teste Titã • v10.3.16</title><link rel="stylesheet" href="style.css"><style>body{background:#160e0b;color:#ffe4b4;font:14px system-ui}.battle-field{width:100%;height:70vh;min-height:400px;background:#130b08}#boss-overlay{position:relative;opacity:1;transform:none;height:auto;display:block}#boss-backdrop{z-index:0}#boss-tower{bottom:var(--tower-foot,9.5%);z-index:3;--tile:65px}#boss-tower img{width:65px;height:54px;object-fit:contain;margin-top:-9px}.controls{max-width:600px;margin:14px auto;text-align:center}.controls button{padding:12px;margin:4px;color:#ffe4b4;background:#673322;border:1px solid #c98249;border-radius:8px}p{padding:0 14px;text-align:center}</style>
+<div id="boss-overlay" data-guardian="titan"><div class="battle-field"><div id="boss-backdrop"></div><div id="boss-tower"><img src="img/bloco-titan.png"><img src="img/bloco-titan.png"><img src="img/bloco-titan.png"></div></div></div>
+<div class="controls"><button onclick="demo()">▶ Demonstração completa</button><button onclick="run('idle')">Respiração</button><button onclick="run('hand')">ATK • punhos</button><button onclick="run('meteor')">ATK • rochas</button><button onclick="run('hurt')">Receber dano</button><button onclick="enrage()">Vida baixa • tensão</button><button onclick="run('defeat')">Derrota</button></div><p id="preview-status" aria-live="polite">Respiração • observe peito, cabeça e mãos</p><p>Teste visual isolado • não altera seu progresso.<br>v10.3.16 — respiração, braços e cabeça em movimento; preparação, impacto e tensão.</p>
+<script src="titan-rig.js"></script><script src="titan-animation.js"></script><script src="titan-audio.js"></script><script>
+let timer,ctx,demoTimers=[],health=1;
+function unlock(){ctx??=new(window.AudioContext||window.webkitAudioContext)();ctx.resume();TitanAudio.preload(ctx);}
+function sound(kind){unlock();TitanAudio.play(ctx,ctx.destination,kind);}
+function cancelDemo(){demoTimers.forEach(clearTimeout);demoTimers=[];}
+function run(state,automatic=false){
+ if(!automatic)cancelDemo();unlock();clearTimeout(timer);TitanAnimation.reset();TitanAnimation.setState({health});TitanAnimation.play(state);
+ const names={idle:'Respiração • peito, cabeça e braços',hand:'Punhos • preparação e impacto',meteor:'Rochas • trajetória até a torre',hurt:'Reação ao dano',defeat:'Derrota do Titã'};
+ document.getElementById('preview-status').textContent=names[state]+(health<.35?' • vida baixa':'');
+ if(state==='hurt')sound('hurt');
+ if(state==='hand'||state==='meteor')timer=setTimeout(()=>{TitanAnimation.impact();sound('impact');},state==='hand'?3100:3300);
+}
+function enrage(){health=health===1?.25:1;run('idle');}
+function demo(){cancelDemo();health=1;run('idle',true);
+ const timeline=[[6000,'hurt'],[8000,'hand'],[14000,'meteor'],[19500,'rage'],[24500,'hand'],[30000,'defeat'],[32500,'idle']];
+ for(const [delay,state]of timeline)demoTimers.push(setTimeout(()=>{if(state==='rage'){health=.25;run('idle',true);}else{if(delay===32500)health=1;run(state,true);}},delay));
+}
+TitanAnimation.setBoss('titan');
+const field=document.querySelector('.battle-field');new ResizeObserver(()=>{const w=field.clientWidth,h=field.clientHeight;field.style.setProperty('--tower-foot',(.095*Math.max(w,h)-(Math.max(w,h)-h)/2)+'px')}).observe(field);
+</script></html>

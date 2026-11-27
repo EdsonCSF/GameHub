@@ -1,0 +1,23 @@
+TOTEM ASCENSION v10.3.10 — Combate e artes
+
+Abra index.html mantendo os arquivos e a pasta img juntos.
+Preservados o menu inicial, o rodapé amarelo e a progressão de Eras sem reset da torre.
+
+- Dano do jogador: 2 HP no nível 1 + 0,15 por nível. Exibido nas duas arenas.
+- Perfect multiplica por 2; crítico do jogador mantém 25% e multiplica por 1,5.
+- Boss: crítico com chance de 30%, multiplicador 1,5. A estabilidade usa inteiros.
+- Resultados de dano: 3,4 segundos. Splash: 2,2 segundos, acima do resultado.
+- Novo ataque do Boss aguarda terminar a leitura do acerto anterior.
+- HP base: Vento 32, Floresta 36, Serpente 40, Tempestade 44, Titã 48,
+  Alien 52, Ceifador 56, Pixel 60, Fantasma 64, Boneca 68, Disfarce 72.
+  Multiplicadores por estrela, resistências e regeneração foram mantidos.
+- Saves antigos: HP máximo atualizado uma única vez, preservando a proporção restante.
+- Braços rebaixados nos 11 Bosses. Alien mantém quatro braços.
+- Serpente usa uma única cauda verde e dourada com estocada.
+- Novas artes PNG transparentes para botões, crítico, Perfect e cauda.
+- Textos dos botões continuam dinâmicos, com dicas visíveis e interação existente.
+
+Validação: sintaxe JavaScript, cálculos e limites de crítico, ordem dos timers,
+migração idempotente de HP sem alteração de altura/Era, configuração dos 11 rigs,
+e composição visual dos novos assets. Não foi possível executar teste no navegador
+ou Android neste ambiente; o posicionamento final deve ser conferido no aparelho.

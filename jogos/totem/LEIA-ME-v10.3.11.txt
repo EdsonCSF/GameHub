@@ -1,0 +1,7 @@
+Totem Ascension v10.3.11
+Splash de erro novo; Perfect, crítico, erro e acerto centralizados com descrição logo abaixo em um único componente, duração de 3,4 segundos.
+HUD do Boss compacto: dano, estabilidade e log na mesma linha. Torre ancorada à plataforma considerando o recorte center/cover da arte e redimensionamentos.
+Botão Log do Boss abre o mesmo Registro da partida, com todos os registros e o mesmo estilo.
+Menu inicial, altura, progressão e rodapé amarelo preservados.
+Validação: sintaxe JavaScript e cálculo de alinhamento em três proporções. Sem teste de execução em navegador/Android neste ambiente.
+Asset img/splash-error.png criado com geração de imagens integrada. Prompt: isolated dark fantasy error splash, broken ruby crystals, tarnished gold border, empty burgundy plaque, transparent alpha, no text. Texto ERRO renderizado pelo jogo.

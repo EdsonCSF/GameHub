@@ -1,0 +1,24 @@
+TOTEM ASCENSION — v10.3.16 — Titã vivo e batalha dinâmica
+
+COMO VER
+Abra index.html para jogar ou TESTE-TITA.html para experimentar sem tocar no save.
+No teste, “Demonstração completa” percorre respiração, dano, punhos, rochas, vida baixa e derrota. Os botões individuais cancelam a demonstração e permitem conferir cada efeito.
+
+MUDANÇAS SOMENTE NO TITÃ
+- Respiração visível e contínua, peito e ombros acompanhando a inspiração.
+- Cabeça com leve giro e deslocamento; braços com balanços independentes.
+- Movimento calculado sobre a mesma pose, sem alternar desenhos. Máscaras suaves preservam as conexões do corpo; não há recortes de braços colados sobre o Boss.
+- Leve flutuação do corpo, mantendo cenário e plataforma fixos.
+- Anéis convergentes indicam o ponto de contato antes do golpe.
+- Fragmentos de pedra sobem na preparação; no especial, pedras descem em direção à torre.
+- Abaixo de 35% de HP, respiração mais intensa e pulso discreto nas bordas. É um estado VISUAL, não uma nova regra de dano ou uma fase de dificuldade.
+- Breve clarão no personagem ao receber dano.
+- Ao concluir a apresentação da vitória existente, o Titã cede e desaparece suavemente. Recompensas e tempo de retorno seguem o jogo anterior.
+
+PRESERVADO
+Arte cinza do Boss, cenário, plataforma, blocos, sons dedicados da v10.3.15, saves, dano, cargas, progressão, recompensas, demais Bosses, menu e feedbacks. Versão v10.3.16 em amarelo nos rodapés.
+
+IMPLEMENTAÇÃO E VERIFICAÇÃO
+Novo titan-rig.js: deformação contínua com amostragem bilinear e transparência, atualização limitada para conter custo em celular. Atlas embutido usado ao abrir por file://, para permitir acesso aos pixels sem dependência de rede. Modo com menos movimento respeitado.
+
+Conferidos: renderização de idle, ataques, dano e derrota; troca para outro Boss; caminhos de assets; sintaxe; integridade do ZIP; comparação dos arquivos preservados. Cerca de 5 ms por atualização da deformação neste ambiente, não medição em celular. A experiência completa no navegador do aparelho ainda precisa ser validada.

@@ -1,0 +1,20 @@
+TOTEM ASCENSION — v10.3.9
+
+Extraia o pacote completo e abra index.html no visualizador habitual.
+
+TROCA DE ERA SEM REINICIAR A JORNADA
+1. Vença os 11 Bosses da rotação.
+2. Toque em Avançar Era para abrir a tela Eras.
+3. Toque no próximo card liberado para voltar diretamente à arena na nova Era.
+
+A altura, os blocos da torre, estabilidade, XP, moedas, essências, itens,
+eventos e progressão continuam exatamente da mesma jornada. A seleção não
+arquiva a partida nem reinicia o jogo. O próximo ciclo de Bosses usa o nível
+mais alto já conquistado ao completar a rotação. Os desbloqueios por altura
+continuam disponíveis.
+
+Somente o próximo card é selecionável. Cards futuros seguem bloqueados;
+cards concluídos não consomem a liberação novamente. Na última Era, os ciclos
+de Bosses continuam ficando mais fortes, sem oferecer uma Era inexistente.
+
+Versão no rodapé atualizada e mantida em amarelo.

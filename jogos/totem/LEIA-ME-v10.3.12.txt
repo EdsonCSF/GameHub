@@ -1,0 +1,12 @@
+Totem Ascension v10.3.12
+
+Correções sobre a versão v10.3.11:
+- Ataque do Boss: animação das garras/cauda e rasgo no contato; valores e splash aparecem depois. Todos os 11 Guardiões usam o mesmo fluxo do atlas de ataques; o ataque de projétil mantém sua animação.
+- Golpe do jogador: recuo e grunhido do Boss precedem o splash de dano. Resultado de acerto, erro, crítico e Perfect aparece mais abaixo após a animação do bloco.
+- Entrada do Boss: removido o efeito forte; a música de combate permanece. As cinco faixas do projeto estão incluídas na pasta music/.
+- Som do impacto reformulado, com grunhido grave e curto na reação do Boss.
+- Perfect dobra ouro, XP, altura e ganhos positivos de estabilidade do turno. Dano no Boss continua em ×2; se for crítico, o fator ×1,5 é aplicado ao dano já dobrado. Uma vitória com golpe final Perfect dobra as recompensas e a recuperação de estabilidade, respeitando o máximo da barra. O bloco de troféu continua único.
+- Ameaça: erro +4%; erro durante Tempestade +7%. Perfect +1% e acerto +2% preservados.
+- Rodapés com versão v10.3.12 e texto amarelo.
+
+Abra index.html no navegador com a pasta img/ e music/ no mesmo diretório. Os dados locais existentes usam o mesmo esquema de salvamento da v10.3.11.

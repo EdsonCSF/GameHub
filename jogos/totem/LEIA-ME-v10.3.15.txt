@@ -1,0 +1,16 @@
+TOTEM ASCENSION — v10.3.15 — Revisão visual e sonora do Titã
+
+Abra index.html para jogar; TESTE-TITA.html para conferir as animações e sons sem alterar o save.
+
+VISUAL
+Titã predominantemente em rocha cinza, lava restrita aos olhos, boca e poucas fissuras. Cenário, plataforma e todos os blocos preservados. Atlas transparente recriado com a ferramenta integrada de imagens a partir do atlas anterior: manter 12 poses/grade 4×3; rocha cinza com planos legíveis; reduzir emissão de lava; preservar chifres, correntes e mãos; sem cenário ou textos.
+
+Idle usa a primeira pose estável e respiração contínua de 5,6 segundos. A expansão máxima é de 0,4% na largura e 0,32% na altura, com base fixa. A alternância de desenhos do idle foi removida. Trocas de pose têm mistura curta de 140 ms. Reação ao dano tem um recuo discreto, sem oscilação rápida.
+
+ÁUDIO
+Dois efeitos dedicados pré-renderizados em WAV: grunhido grave/rouco de dano (1,65 s) e estrondo com corpo grave, estalo de pedra e reverberação (1,85 s). São efeitos de design sonoro por síntese em camadas, não gravações de animais. Substituem os tons antigos apenas no Titã. Volume e botão de efeitos do jogo continuam controlando ambos. Incluídos em titan-audio.js para funcionar offline, sem requisição de áudio local por fetch.
+
+VERIFICAÇÃO
+Sintaxe JavaScript, decodificação/renderização dos assets, troca de Boss, integridade do ZIP e arquivos preservados conferidos. WAVs sem clipping digital. Não foi possível validar a audição nem executar a experiência completa em navegador neste ambiente; use TESTE-TITA.html no celular para avaliar timbre e volume.
+
+Mantidos os valores de combate, progresso, save, demais Bosses e feedbacks. Versão atualizada para v10.3.15 nos rodapés amarelos.
