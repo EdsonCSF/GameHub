@@ -1,533 +1,304 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!doctype html>
+<html lang="pt-BR" data-theme="neon" data-mode="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GameHub</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg:       #fdf6e3;
-      --bg2:      #fff8f0;
-      --yellow:   #ffd93d;
-      --orange:   #ff6b35;
-      --red:      #e63946;
-      --green:    #06d6a0;
-      --blue:     #4361ee;
-      --purple:   #7b2d8b;
-      --dark:     #1a1a2e;
-      --ink:      #2b2b2b;
-      --white:    #ffffff;
-      --shadow:   4px 4px 0px var(--ink);
-      --shadow-lg:6px 6px 0px var(--ink);
-      --radius:   16px;
-      --border:   3px solid var(--ink);
-    }
-
-    html, body {
-      min-height: 100vh;
-      background: var(--bg);
-      font-family: 'Nunito', sans-serif;
-      overflow-x: hidden;
-    }
-
-    /* ── POLKA DOT BG ── */
-    body {
-      background-color: #fdf6e3;
-      background-image: radial-gradient(circle, #e8d9b0 1.5px, transparent 1.5px);
-      background-size: 28px 28px;
-    }
-
-    /* ── HEADER ── */
-    header {
-      text-align: center;
-      padding: 44px 24px 28px;
-      position: relative;
-    }
-
-    .logo-wrap {
-      display: inline-block;
-      background: var(--yellow);
-      border: var(--border);
-      border-radius: 20px;
-      box-shadow: var(--shadow-lg);
-      padding: 10px 36px 12px;
-      margin-bottom: 12px;
-    }
-
-    .logo {
-      font-family: 'Fredoka One', cursive;
-      font-size: clamp(2.2rem, 6vw, 3.6rem);
-      color: var(--ink);
-      letter-spacing: 0.04em;
-      line-height: 1;
-    }
-
-    .logo span {
-      color: var(--orange);
-    }
-
-    .subtitle {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--purple);
-      letter-spacing: 0.05em;
-      margin-top: 6px;
-    }
-
-    .header-stars {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 14px;
-      font-size: 1.4rem;
-    }
-
-    /* ── MAIN GRID ── */
-    main {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 20px 20px 60px;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 18px;
-    }
-
-    @media (max-width: 900px) {
-      main { grid-template-columns: repeat(3, 1fr); gap: 14px; }
-    }
-    @media (max-width: 600px) {
-      main { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    }
-    @media (max-width: 360px) {
-      main { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    }
-
-    /* ── CARD ── */
-    .game-card {
-      position: relative;
-      background: var(--white);
-      border: var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-lg);
-      overflow: hidden;
-      text-decoration: none;
-      color: var(--ink);
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.18s cubic-bezier(.22,.68,0,1.3), box-shadow 0.18s;
-      animation: popIn 0.45s cubic-bezier(.22,.68,0,1.4) both;
-    }
-
-    .game-card:hover {
-      transform: translateY(-6px) rotate(-1deg);
-      box-shadow: 8px 10px 0px var(--ink);
-    }
-
-    .game-card:active {
-      transform: translateY(2px);
-      box-shadow: 2px 2px 0px var(--ink);
-    }
-
-    /* stagger */
-    .game-card:nth-child(1) { animation-delay: 0.05s; }
-    .game-card:nth-child(2) { animation-delay: 0.12s; }
-    .game-card:nth-child(3) { animation-delay: 0.19s; }
-    .game-card:nth-child(4) { animation-delay: 0.26s; }
-    .game-card:nth-child(5) { animation-delay: 0.33s; }
-    .game-card:nth-child(6) { animation-delay: 0.40s; }
-    .game-card:nth-child(7) { animation-delay: 0.47s; }
-
-    /* ── THUMB ── */
-  .card-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-  display: block;
-  transition: transform 0.4s ease;
-  background: #e8f4ff;
-}
-    .card-thumb {
-      position: relative;
-      height: 120px;
-      overflow: hidden;
-    }
-    .game-card:hover .card-thumb img {
-      transform: scale(1.07);
-    }
-
-    .no-img {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3.5rem;
-      background: linear-gradient(135deg, #e8f4ff, #d0e8ff);
-    }
-
-    /* play overlay */
-    .play-btn {
-      position: absolute;
-      inset: 0;
-      background: rgba(255,255,255,0.45);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-
-    .game-card:hover .play-btn { opacity: 1; }
-
-    .play-circle {
-      width: 52px; height: 52px;
-      background: var(--yellow);
-      border: 3px solid var(--ink);
-      border-radius: 50%;
-      box-shadow: 3px 3px 0 var(--ink);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.4rem;
-      transform: scale(0.8);
-      transition: transform 0.2s cubic-bezier(.22,.68,0,1.4);
-    }
-
-    .game-card:hover .play-circle { transform: scale(1); }
-
-    /* ── BADGE ── */
-    .card-status {
-      position: absolute;
-      top: 10px; left: 10px;
-      font-family: 'Fredoka One', cursive;
-      font-size: 0.72rem;
-      padding: 3px 10px;
-      border-radius: 30px;
-      border: 2.5px solid var(--ink);
-      box-shadow: 2px 2px 0 var(--ink);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      z-index: 5;
-    }
-
-    .status-play { background: var(--green);  color: var(--ink); }
-    .status-beta { background: var(--yellow); color: var(--ink); }
-    .status-soon { background: #c8c8d8;       color: var(--ink); }
-    .status-test { background: var(--orange); color: var(--white); }
-
-    /* ── CARD INFO ── */
-    .card-info {
-      padding: 8px 10px 10px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
-    .card-tag {
-      font-size: 0.62rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--orange);
-    }
-
-    .card-title {
-      font-family: 'Fredoka One', cursive;
-      font-size: 0.95rem;
-      color: var(--ink);
-      line-height: 1.2;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .card-desc {
-      font-size: 0.7rem;
-      color: #555;
-      font-weight: 600;
-      line-height: 1.4;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    /* colored top stripe per card */
-    .stripe { height: 6px; width: 100%; flex-shrink: 0; }
-
-    /* ── ADD CARD ── */
-    .card-add {
-      background: var(--bg2);
-      border: 3px dashed #b0a890;
-      border-radius: var(--radius);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-height: 170px;
-      color: #b0a890;
-      font-family: 'Fredoka One', cursive;
-      font-size: 0.8rem;
-      letter-spacing: 0.05em;
-      cursor: default;
-    }
-
-    .card-add .plus {
-      font-size: 2.4rem;
-      line-height: 1;
-      color: #c8bca0;
-    }
-
-    /* ── FOOTER ── */
-    footer {
-      text-align: center;
-      padding: 20px 24px 32px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: #8a7a60;
-      border-top: 3px solid #e0d5c0;
-    }
-
-    footer a { color: var(--orange); text-decoration: none; }
-
-    /* ── ANIMATIONS ── */
-    @keyframes popIn {
-      from { opacity: 0; transform: scale(0.7) translateY(20px); }
-      to   { opacity: 1; transform: scale(1) translateY(0); }
-    }
-  
-    body { background: radial-gradient(ellipse at top left,#30234c,transparent 55%),#10131e; color:#f7f5ff; }
-    header { max-width:1100px; margin:auto; text-align:left; padding:clamp(32px,7vw,80px) 20px 16px; }
-    h1 { font:800 clamp(3rem,9vw,6rem)/1 Nunito,sans-serif; letter-spacing:-.075em; }
-    h1 span { color:#a6f28b; }
-    header p { margin-top:12px; color:#d2cbdc; }
-    .game-card { background:#202333; border:1px solid #464457; box-shadow:0 8px 18px #0004; animation:arrive .42s backwards; }
-    .game-card:hover,.game-card:focus-visible { transform:translateY(-4px); box-shadow:0 12px 24px #0006; border-color:#a6f28b; }
-    .game-card:focus-visible { outline:3px solid #a6f28b; outline-offset:3px; }
-    .card-thumb { height:auto; aspect-ratio:16/10; }
-    .card-thumb img { background:#171925; }
-    .stripe { height:3px; }
-    .card-info { padding:12px; gap:5px; }
-    .card-tag { color:#b2eaa0; }
-    .card-title { color:white; white-space:normal; font:800 1.05rem/1.15 Nunito,sans-serif; }
-    .card-desc,footer { color:#c3bfd1; }
-    footer { border-top:1px solid #403c4a; }
-    @keyframes arrive { from { opacity:0; transform:translateY(12px); } }
-    @media(prefers-reduced-motion:reduce) { .game-card,.card-thumb img,.play-btn { animation:none; transition:none; } }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GameHub</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chivo:wght@400;600;800;900&family=Exo+2:ital,wght@1,900&display=swap">
+<style>
+*{box-sizing:border-box}
+:root{--bg:#090f1e;--panel:#121e32;--text:#f5faff;--muted:#a7b9ce;--a:#5bf5de;--b:#a7ff72;--c:#b77aff;--line:#35546b;--grid:46px;color-scheme:dark}
+[data-theme=tech]{--a:#41defe;--b:#79abff;--c:#4f8dfe;--panel:#0d2139;--grid:32px}
+[data-theme=fantasy]{--a:#ffd48f;--b:#f99e5f;--c:#d88965;--panel:#27201b;--bg:#140e12;--line:#725238}
+[data-theme=minimal]{--a:#e3b5ff;--b:#a890ff;--c:#a890ff;--panel:#181827;--bg:#101019;--line:#3d364e}
+[data-theme=arcade]{--a:#ff7bf4;--b:#93fbff;--c:#ab6cff;--panel:#241539;--bg:#110b23;--grid:18px}
+[data-mode=light]{color-scheme:light;--bg:#eef4fa;--panel:#fff;--text:#15233b;--muted:#485c71;--line:#a4b4c9}
+[data-mode=light][data-theme=neon]{--a:#007b75;--b:#387611;--c:#7656be}
+[data-mode=light][data-theme=tech]{--a:#006d9c;--b:#2557a8;--c:#2764a9}
+[data-mode=light][data-theme=fantasy]{--a:#874a14;--b:#965321;--c:#a45c32;--bg:#faf0e3}
+[data-mode=light][data-theme=minimal]{--a:#753c9e;--b:#5744a2;--c:#8667c3}
+[data-mode=light][data-theme=arcade]{--a:#9c247f;--b:#006677;--c:#8951bd;--bg:#f9efff}
+body{margin:0;color:var(--text);background:radial-gradient(ellipse at 10% 0%,color-mix(in srgb,var(--a) 12%,transparent),transparent 55%) fixed,var(--bg);font:16px Chivo,system-ui,sans-serif}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(90deg,var(--line) 1px,transparent 1px),linear-gradient(var(--line) 1px,transparent 1px);background-size:var(--grid) var(--grid);opacity:.14;mask-image:linear-gradient(black,transparent 90%)}
+[data-theme=fantasy] body::before,[data-theme=minimal] body::before{display:none}
+[data-theme=fantasy] h1,[data-theme=fantasy] .card-title{font-family:Georgia,serif}
+[data-theme=arcade] .game-card{border-radius:5px}
+.shell{position:relative;width:min(1120px,100%);margin:auto;padding:clamp(18px,4vw,48px)}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:24px}
+h1{margin:0;font:italic 900 clamp(36px,7vw,64px)/1 "Exo 2",system-ui,sans-serif;letter-spacing:-.045em;background:linear-gradient(105deg,var(--b),var(--a));color:transparent;background-clip:text}
+header p{margin:8px 0 0;color:var(--muted);font-size:clamp(14px,3vw,20px)}
+button,select,input{font:inherit;color:inherit}
+button,select{cursor:pointer}
+.control, input,select{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:10px 12px}
+.control:hover,select:hover{border-color:var(--a)}
+:focus-visible{outline:2px solid var(--a);outline-offset:3px}
+.search{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:0 14px;background:var(--panel);color:var(--muted)}
+.search input{width:100%;background:none;border:0;padding:13px 0;border-radius:0}
+.search svg{flex:none}
+nav{display:flex;gap:8px;overflow:auto;padding:8px 3px 12px;margin:8px -3px 10px}
+nav button{white-space:nowrap;border-radius:30px!important}
+nav button[aria-pressed=true]{border-color:var(--a);color:var(--a);box-shadow:inset 0 0 10px color-mix(in srgb,var(--a) 20%,transparent),0 0 8px color-mix(in srgb,var(--a) 30%,transparent)}
+main{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media(min-width:720px){main{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}}
+@media(min-width:1020px){main{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.game-card{position:relative;display:flex;flex-direction:column;border:1px solid var(--c);border-radius:15px;overflow:hidden;background:var(--panel);color:inherit;text-decoration:none;box-shadow:0 2px 14px color-mix(in srgb,var(--c) 19%,transparent);transition:transform .2s,border-color .2s;animation:arrive .38s ease backwards}
+.game-card:nth-child(3n+1){border-color:var(--a)}
+.game-card:nth-child(3n+2){border-color:var(--b)}
+.game-card:hover,.game-card:focus-visible{transform:translateY(-4px);border-color:var(--a)}
+@keyframes arrive{from{opacity:0;translate:0 8px}}
+.card-thumb{position:relative;aspect-ratio:1.58;background:#152238;display:grid;place-items:center;overflow:hidden}
+.card-thumb img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.fps{background:repeating-linear-gradient(125deg,#23342f 0 1px,transparent 1px 14px),linear-gradient(130deg,#223229,#0b1718);color:#faf5db}
+.fps img{width:40%;height:auto;inset:auto 0 0 auto;object-fit:contain;opacity:.78}
+.fps-title{z-index:1;justify-self:start;margin-left:11%;font:900 clamp(17px,3.7vw,30px)/.96 Chivo,sans-serif;text-shadow:0 2px 5px #000}
+.fps-title b{color:#d8e18b}
+.no-img{font-size:38px;height:100%;align-items:center}
+.play-btn{position:absolute;inset:auto 7px 7px auto;padding:5px 9px;background:#111a29e8;border:1px solid #9bb9c9;color:#fff;border-radius:30px;font-size:12px;opacity:0;z-index:2}
+.play-btn .play-circle{line-height:1.1}
+.game-card:hover .play-btn,.game-card:focus-visible .play-btn,.featured .play-btn{opacity:1}
+.card-status{position:absolute;top:7px;left:7px;z-index:2;background:#1c1707;color:#ffe776;border:1px solid #f8d966;border-radius:24px;padding:3px 8px;font-size:10px;font-weight:800;text-transform:uppercase}
+.card-info{display:grid;align-content:start;gap:5px;padding:10px 11px 12px}
+.card-tag{color:var(--a);text-transform:uppercase;font-size:10px;font-weight:800}
+.card-title{font-size:clamp(14px,3vw,18px);font-weight:800;overflow-wrap:anywhere}
+.card-desc,footer,#empty{color:var(--muted);font-size:12px}
+.stripe{display:none}
+footer{padding:24px 0 6px;text-align:center}
+dialog{width:min(420px,calc(100% - 32px));background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:16px;padding:22px}
+dialog::backdrop{background:#050812aa}
+dialog h2{margin-top:0}
+dialog label{display:grid;gap:6px;margin:0 0 14px}
+[hidden]{display:none!important}
+@media(prefers-reduced-motion:reduce){.game-card{animation:none;transition:none}}
+</style>
+<script>
+try{
+ const root=document.documentElement;
+ const theme=localStorage.getItem('gh-theme'),mode=localStorage.getItem('gh-mode');
+ if(['neon','tech','fantasy','minimal','arcade'].includes(theme))root.dataset.theme=theme;
+ if(['light','dark'].includes(mode))root.dataset.mode=mode;
+}catch{}
+</script>
 </head>
 <body>
-
-<header><h1>Game<span>Hub</span></h1><p>Escolha seu jogo</p></header>
-<main>
-
-  <!-- ═══════════════════════════════
-       JOGO 1
-       href → pasta do jogo
-       src  → img/nome.png
-       ═══════════════════════════════ -->
-  <a class="game-card" href="jogos/totem/index.html">
+<div class="shell">
+<header><div><h1>GameHubϟ</h1><p>Escolha seu jogo</p></div><button id="appearance" class="control" type="button" aria-label="Configurar aparência">⚙ Temas</button></header>
+<label class="search"><svg width="20" height="20" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg><input id="query" type="search" aria-label="Buscar jogo" placeholder="Buscar jogo"></label>
+<nav id="filters" aria-label="Filtrar por gênero"></nav>
+<main id="catalog">
+<a class="game-card featured" href="https://combatsector09-test.combatsector09.workers.dev/">
+<div class="card-thumb fps"><img src="https://combatsector09-test.combatsector09.workers.dev/icons/game-192.png" alt=""><span class="fps-title">COMBAT<br>SECTOR <b>09</b></span><span class="play-btn">▶ Jogar</span></div>
+<span class="card-status">FPS</span><div class="card-info"><div class="card-tag">Ação / FPS</div><div class="card-title">Combat Sector 09</div><div class="card-desc">FPS militar com salas online</div></div></a>
+<a class="game-card" href="jogos/totem/index.html">
     <div class="stripe" style="background:#e63946;"></div>
     <div class="card-thumb">
-      <img src="jogos/totem/img/referencia-2.jpg" alt="torre"
+      <img loading="lazy" src="jogos/totem/img/referencia-2.jpg" alt="torre"
            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
       <div class="no-img" style="display:none">🚘</div>
       <div class="play-btn"><div class="play-circle">▶</div></div>
     </div>
     <span class="card-status status-soon">Beta</span>
     <div class="card-info">
-      <div class="card-tag">puzzle action</div>
+      <div class="card-tag">Ação / Puzzle</div>
       <div class="card-title">Totem Ascensão</div>
       <div class="card-desc">Jogo original </div>
     </div>
   </a>
-
-  <!-- ═══════ JOGO 2 ═══════ -->
-  <a class="game-card" href="jogos/o-ultimo-mundo/o-ultimo-mundo-final5_5.html">
+<a class="game-card" href="jogos/o-ultimo-mundo/o-ultimo-mundo-final5_5.html">
     <div class="stripe" style="background:#4361ee;"></div>
     <div class="card-thumb">
-      <img src="jogos/o-ultimo-mundo/mapbg.png" alt="O Último Mundo"
+      <img loading="lazy" src="jogos/o-ultimo-mundo/mapbg.png" alt="O Último Mundo"
            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
       <div class="no-img" style="display:none">🕷️🧬</div>
       <div class="play-btn"><div class="play-circle">▶</div></div>
     </div>
     <span class="card-status status-beta">Beta</span>
     <div class="card-info">
-      <div class="card-tag">Game</div>
+      <div class="card-tag">Estratégia / RPG</div>
       <div class="card-title">O Último Mundo</div>
       <div class="card-desc">Progressão.</div>
     </div>
 </a>
-  
-  <!-- ═══════ JOGO 2 ═══════ -->
-  <a class="game-card" href="jogos/spider-merge/index.html">
+<a class="game-card" href="jogos/spider-merge/index.html">
     <div class="stripe" style="background:#4361ee;"></div>
     <div class="card-thumb">
-      <img src="jogos/spider-merge/capas/backgroundSM.png" alt="SpiderMergeTycoon"
+      <img loading="lazy" src="jogos/spider-merge/capas/backgroundSM.png" alt="SpiderMergeTycoon"
            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
       <div class="no-img" style="display:none">🕷️🧬</div>
       <div class="play-btn"><div class="play-circle">▶</div></div>
     </div>
     <span class="card-status status-beta">Beta</span>
     <div class="card-info">
-      <div class="card-tag">IO Game</div>
+      <div class="card-tag">Estratégia</div>
       <div class="card-title">SpiderMergeTycoon</div>
       <div class="card-desc">Complete a coleção assimilando todas aranhas.</div>
     </div>
 </a>
-  
-  
-
-  <!-- ═══════ JOGO 3 ═══════ -->
-  <a class="game-card" href="jogos/aranhas-tycoon/index.html">
+<a class="game-card" href="jogos/aranhas-tycoon/index.html">
     <div class="stripe" style="background:#06d6a0;"></div>
     <div class="card-thumb">
-      <img src="jogos/aranhas-tycoon/capas/AranhaTycoon.png" alt="Aranhas"
+      <img loading="lazy" src="jogos/aranhas-tycoon/capas/AranhaTycoon.png" alt="Aranhas"
            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
       <div class="no-img" style="display:none">🎮</div>
       <div class="play-btn"><div class="play-circle">▶</div></div>
     </div>
     <span class="card-status status-soon">Beta</span>
     <div class="card-info">
-      <div class="card-tag">Puzzle</div>
+      <div class="card-tag">Estratégia / Puzzle</div>
       <div class="card-title">AranhaTycoon</div>
       <div class="card-desc">Tenha uma coleção incrível e infinita de mutações de aranhas.</div>
     </div>
   </a>
-
-  <!-- ═══════ JOGO 4 ═══════ -->
-  <a class="game-card" href="jogos/stellar-runner/index.html">
+<a class="game-card" href="jogos/stellar-runner/index.html">
     <div class="stripe" style="background:#7b2d8b;"></div>
     <div class="card-thumb">
-      <img src="jogos/stellar-runner/capas/StellarRunner.png" alt="Stellar"
+      <img loading="lazy" src="jogos/stellar-runner/capas/StellarRunner.png" alt="Stellar"
            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
       <div class="no-img" style="display:none">🚀</div>
       <div class="play-btn"><div class="play-circle">▶</div></div>
     </div>
         <span class="card-status status-soon">teste</span>
     <div class="card-info">
-      <div class="card-tag">Cartas</div>
+      <div class="card-tag">Ação / Arcade</div>
       <div class="card-title">StellaRunner.</div>
       <div class="card-desc">Game de naves.</div>
     </div>
   </a>
-
-
-  <!-- ═══════ JOGO 5 ═══════ -->
-    <a class="game-card" href="jogos/the-kings-tcg/index.html">
+<a class="game-card" href="jogos/the-kings-tcg/index.html">
     <div class="stripe" style="background:#4361ee;"></div>
     <div class="card-thumb">
-      <img src="jogos/the-kings-tcg/capas/thekings.png" alt="TheKings TCG"
+      <img loading="lazy" src="jogos/the-kings-tcg/capas/thekings.png" alt="TheKings TCG"
            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
       <div class="no-img" style="display:none">👑</div>
       <div class="play-btn"><div class="play-circle">▶</div></div>
     </div>
     <span class="card-status status-beta">Beta</span>
     <div class="card-info">
-      <div class="card-tag">Card Game</div>
+      <div class="card-tag">Cartas / Estratégia</div>
       <div class="card-title">TheKings TCG</div>
       <div class="card-desc">Domine os reinos com suas cartas. A ascensão de um único rei.</div>
     </div>
     </a>
-
-  <!-- ═══════ JOGO 6 ═══════ -->
-  <a class="game-card" href="jogos/stellar-miner/index.html">
+<a class="game-card" href="jogos/stellar-miner/index.html">
     <div class="stripe" style="background:#7b2d8b;"></div>
     <div class="card-thumb">
-      <img src="jogos/stellar-miner/capas/Stellaminer.png" alt="Stellar miner"
+      <img loading="lazy" src="jogos/stellar-miner/capas/Stellaminer.png" alt="Stellar miner"
            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
       <div class="no-img" style="display:none">👾</div>
       <div class="play-btn"><div class="play-circle">▶</div></div>
     </div>
         <span class="card-status status-soon">teste</span>
     <div class="card-info">
-      <div class="card-tag">Estratégia naves</div>
+      <div class="card-tag">Estratégia / Arcade</div>
       <div class="card-title">Stellar Miner</div>
       <div class="card-desc">Jogo de naves retro.</div>
     </div>
   </a>
-
-  <!-- ═══════ JOGO 7 ═══════ -->
-  <a class="game-card" href="jogos/the-kings-dungeon/index.html">
+<a class="game-card" href="jogos/the-kings-dungeon/index.html">
     <div class="stripe" style="background:#7b2d8b;"></div>
     <div class="card-thumb">
-      <img src="jogos/the-kings-dungeon/capas/Thekingsdungeonrpg.png" alt="TKDRPG"
+      <img loading="lazy" src="jogos/the-kings-dungeon/capas/Thekingsdungeonrpg.png" alt="TKDRPG"
            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
       <div class="no-img" style="display:none">🃏</div>
       <div class="play-btn"><div class="play-circle">▶</div></div>
     </div>
         <span class="card-status status-soon">teste</span>
     <div class="card-info">
-      <div class="card-tag">Cartas</div>
+      <div class="card-tag">RPG / Cartas</div>
       <div class="card-title">The kings Dungeon RPG.</div>
       <div class="card-desc">Game de cartas RPG.</div>
     </div>
   </a>
-
-  <!-- ═══════ JOGO 8 ═══════ -->
-    <a class="game-card" href="jogos/border-shooter/index.html">
+<a class="game-card" href="jogos/border-shooter/index.html">
     <div class="stripe" style="background:#ffd93d;"></div>
     <div class="card-thumb">
-      <img src="jogos/border-shooter/capas/BorderIO.png" alt="Border IO"
+      <img loading="lazy" src="jogos/border-shooter/capas/BorderIO.png" alt="Border IO"
            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
       <div class="no-img" style="display:none">🕹️</div>
       <div class="play-btn"><div class="play-circle">▶</div></div>
     </div>
     <span class="card-status status-soon">teste</span>
     <div class="card-info">
-      <div class="card-tag">Arcade</div>
+      <div class="card-tag">Ação / Arcade</div>
       <div class="card-title">Border Shoter IO</div>
       <div class="card-desc">Jogo de tiros IO</div>
     </div>
     </a>
-<!-- ═══════ JOGO 9 ═══════ -->
-  <a class="game-card" href="jogos/enduro-retro/index.html">
+<a class="game-card" href="jogos/enduro-retro/index.html">
     <div class="stripe" style="background:#e63946;"></div>
     <div class="card-thumb">
-      <img src="jogos/enduro-retro/capas/Enduroretro.png" alt="Enduro"
+      <img loading="lazy" src="jogos/enduro-retro/capas/Enduroretro.png" alt="Enduro"
            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
       <div class="no-img" style="display:none">🚘</div>
       <div class="play-btn"><div class="play-circle">▶</div></div>
     </div>
     <span class="card-status status-soon">teste</span>
     <div class="card-info">
-      <div class="card-tag">Corrida</div>
+      <div class="card-tag">Corrida / Arcade</div>
       <div class="card-title">Enduro Retro</div>
       <div class="card-desc">Copia enduro .</div>
     </div>
   </a>
-
-  <!-- ═══════ JOGO 10 ═══════ -->
-
-  <a class="game-card" href="jogos/chopper/index.html">
+<a class="game-card" href="jogos/chopper/index.html">
     <div class="stripe" style="background:#ff6b35;"></div>
     <div class="card-thumb">
-      <img src="jogos/chopper/capas/chopper.png" alt="Chopper"
+      <img loading="lazy" src="jogos/chopper/capas/chopper.png" alt="Chopper"
            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
       <div class="no-img" style="display:none">🐕</div>
       <div class="play-btn"><div class="play-circle">▶</div></div>
     </div>
     <span class="card-status status-test">Teste</span>
     <div class="card-info">
-      <div class="card-tag">Top-down</div>
+      <div class="card-tag">Ação</div>
       <div class="card-title">Chopper</div>
       <div class="card-desc">Proteja o cachorro para não se contaminar.</div>
     </div>
   </a>
-
-  
 </main>
-
-<footer>
-  &copy; 2026 · GameHub · EdsonCSF edsony1@gmail.com
-</footer>
-
+<p id="empty" role="status" hidden>Nenhum jogo encontrado.</p>
+<footer>© 2026 GameHub · EdsonCSF · <a style="color:inherit" href="mailto:edsony1@gmail.com">Contato</a></footer>
+</div>
+<dialog id="settings"><h2>Aparência</h2>
+<label>Tema<select id="theme"><option value="neon">Neon GameHub</option><option value="tech">Sci-Fi Tech</option><option value="fantasy">Fantasy RPG</option><option value="minimal">Moderno Minimalista</option><option value="arcade">Arcade Retro</option></select></label>
+<label>Modo<select id="mode"><option value="dark">Escuro</option><option value="light">Claro</option></select></label>
+<form method="dialog"><button class="control">Concluir</button></form></dialog>
+<script>
+const $=id=>document.getElementById(id);
+const normalize=text=>text.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu,'');
+const cards=[...document.querySelectorAll('.game-card')];
+const filters=['Todos','Ação','Estratégia','RPG','Cartas','FPS','Puzzle','Arcade','Corrida'];
+let genre='Todos';
+function filterGames(){
+ const term=normalize($('query').value.trim());
+ let results=0;
+ for(const card of cards){
+  const tags=card.querySelector('.card-tag').textContent.split(' / ');
+  card.hidden=!(normalize(card.textContent).includes(term)&&(genre==='Todos'||tags.includes(genre)));
+  if(!card.hidden)results++;
+ }
+ $('empty').hidden=results>0;
+}
+for(const label of filters){
+ const button=document.createElement('button');
+ button.className='control';
+ button.textContent=label;
+ button.setAttribute('aria-pressed',String(label===genre));
+ button.addEventListener('click',()=>{
+  genre=label;
+  for(const filter of $('filters').children)filter.setAttribute('aria-pressed',String(filter===button));
+  filterGames();
+ });
+ $('filters').append(button);
+}
+$('query').addEventListener('input',filterGames);
+const root=document.documentElement;
+for(const key of ['theme','mode']){
+ $(key).value=root.dataset[key];
+ $(key).addEventListener('change',()=>{
+  root.dataset[key]=$(key).value;
+  try{localStorage.setItem('gh-'+key,$(key).value)}catch{}
+ });
+}
+$('appearance').addEventListener('click',()=>$('settings').showModal());
+</script>
 </body>
 </html>
-
