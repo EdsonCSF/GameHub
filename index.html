@@ -69,17 +69,9 @@ dialog h2{margin-top:0}
 dialog label{display:grid;gap:6px;margin:0 0 14px}
 [hidden]{display:none!important}
 @media(prefers-reduced-motion:reduce){.game-card{animation:none;transition:none}}
-.slime-brand{display:flex;flex-direction:column;align-items:center;gap:0}
-header .slime-brand h1{font:italic 900 clamp(22px,6.25vw,58px)/1 "Exo 2",system-ui,sans-serif;white-space:nowrap}
-.slime-splash{position:relative;width:94%;height:clamp(26px,8vw,52px);margin-top:1px;transform-origin:50% 60%;animation:slime-impact .48s cubic-bezier(.24,.8,.3,1.2) both}
-.slime-splash::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 37% 35%,#f4ffad 0 3%,transparent 8%),radial-gradient(ellipse at 72% 58%,#d7ff87 0 4%,transparent 8%),linear-gradient(174deg,#ddff7b 8%,#9be82b 49%,#4e9b12 79%,#286a16);clip-path:polygon(0% 43%,18% 36%,12% 7%,31% 31%,37% 23%,43% 2%,48% 27%,60% 29%,73% 2%,70% 31%,80% 39%,98% 24%,86% 52%,100% 64%,76% 66%,68% 71%,72% 96%,56% 79%,44% 81%,36% 100%,32% 77%,20% 69%,4% 89%,14% 59%);filter:brightness(1.06)}
-.slime-splash i{position:absolute;width:7%;height:19%;border-radius:68% 32% 48% 52%;background:radial-gradient(ellipse at 31% 24%,#eaffad,#8bd428 54%,#438c1b);box-shadow:0 0 6px #91df4c55}
-.slime-splash i:nth-child(1){left:0;top:10%;transform:rotate(20deg)}
-.slime-splash i:nth-child(2){left:12%;bottom:1%;width:4%;transform:rotate(-30deg)}
-.slime-splash i:nth-child(3){right:0;top:5%;width:6%;transform:rotate(-24deg)}
-.slime-splash i:nth-child(4){right:7%;bottom:2%;width:4%;transform:rotate(29deg)}
-@keyframes slime-impact{0%{opacity:0;transform:scale(.28,.68)}66%{opacity:1;transform:scale(1.07,.91)}100%{opacity:1;transform:scale(1)}}
-@media(prefers-reduced-motion:reduce){.slime-splash{animation:none}}
+.meleka-brand{margin:0;line-height:1;background:none}
+.meleka-brand img{display:block;width:clamp(150px,56vw,360px);max-width:100%;height:auto}
+header>div{min-width:0}
 header .brand-subtitle{margin-top:4px}
 #appearance{flex:none}
 </style>
@@ -94,7 +86,7 @@ try{
 </head>
 <body>
 <div class="shell">
-<header><div><div class="slime-brand"><h1>Meleka Games</h1><span class="slime-splash" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div><p class="brand-subtitle">Escolha seu jogo</p></div><button id="appearance" class="control" type="button" aria-label="Configurar aparência">⚙ Temas</button></header>
+<header><div><h1 class="meleka-brand"><img src="img/meleka-games.webp" width="840" height="280" alt="Meleka Games" fetchpriority="high"></h1><p class="brand-subtitle">Escolha seu jogo</p></div><button id="appearance" class="control" type="button" aria-label="Configurar aparência">⚙ Temas</button></header>
 <label class="search"><svg width="20" height="20" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg><input id="query" type="search" aria-label="Buscar jogo" placeholder="Buscar jogo"></label>
 <nav id="filters" aria-label="Filtrar por gênero"></nav>
 <main id="catalog">
