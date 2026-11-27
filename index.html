@@ -69,14 +69,19 @@ dialog h2{margin-top:0}
 dialog label{display:grid;gap:6px;margin:0 0 14px}
 [hidden]{display:none!important}
 @media(prefers-reduced-motion:reduce){.game-card{animation:none;transition:none}}
-.slime-brand{position:relative;display:inline-grid;place-items:center;isolation:isolate;padding:16px 12px 21px;color:#153306}
-.slime-brand::before,.slime-brand::after{content:"";position:absolute;pointer-events:none;z-index:-1}
-.slime-brand::before{inset:3px 1px 6px;transform:rotate(-3deg);border-radius:31% 48% 24% 42% / 54% 40% 56% 41%;background:radial-gradient(ellipse at 24% 16%,#f4ffb9 0 3%,transparent 13%),radial-gradient(circle at 85% 38%,#d5ff73 0 2%,#7fbd20 3%,transparent 5%),radial-gradient(circle at 13% 70%,#c7fb55 0 2%,#68a919 3%,transparent 5%),radial-gradient(ellipse at 43% 17%,#dcff7b,#9bea32 57%,#4b9517);border:2px solid #78c833;box-shadow:inset 0 4px 5px #f4ffb5b0,inset 0 -8px 10px #346f1e88,0 4px 0 #2d601b,0 0 17px #92ed483b}
-.slime-brand::after{width:13px;height:23px;left:26%;bottom:0;border-radius:40% 50% 50% 55%;background:linear-gradient(100deg,#73c227,#bdff65 38%,#589d21);box-shadow:0 3px 0 #397b21, 42px -5px 0 -3px #78bd29, -31px 3px 0 -4px #80cd31;transform:rotate(9deg)}
-header .slime-brand{font-family:"Exo 2",system-ui,sans-serif;font-size:clamp(23px,6.2vw,56px);white-space:nowrap;background:none;color:#153306;text-shadow:0 1px 0 #eaff8e;letter-spacing:-.055em}
-header .brand-subtitle{margin-top:5px}
+.slime-brand{display:flex;flex-direction:column;align-items:center;gap:0}
+header .slime-brand h1{font:italic 900 clamp(22px,6.25vw,58px)/1 "Exo 2",system-ui,sans-serif;white-space:nowrap}
+.slime-splash{position:relative;width:94%;height:clamp(26px,8vw,52px);margin-top:1px;transform-origin:50% 60%;animation:slime-impact .48s cubic-bezier(.24,.8,.3,1.2) both}
+.slime-splash::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 37% 35%,#f4ffad 0 3%,transparent 8%),radial-gradient(ellipse at 72% 58%,#d7ff87 0 4%,transparent 8%),linear-gradient(174deg,#ddff7b 8%,#9be82b 49%,#4e9b12 79%,#286a16);clip-path:polygon(0% 43%,18% 36%,12% 7%,31% 31%,37% 23%,43% 2%,48% 27%,60% 29%,73% 2%,70% 31%,80% 39%,98% 24%,86% 52%,100% 64%,76% 66%,68% 71%,72% 96%,56% 79%,44% 81%,36% 100%,32% 77%,20% 69%,4% 89%,14% 59%);filter:brightness(1.06)}
+.slime-splash i{position:absolute;width:7%;height:19%;border-radius:68% 32% 48% 52%;background:radial-gradient(ellipse at 31% 24%,#eaffad,#8bd428 54%,#438c1b);box-shadow:0 0 6px #91df4c55}
+.slime-splash i:nth-child(1){left:0;top:10%;transform:rotate(20deg)}
+.slime-splash i:nth-child(2){left:12%;bottom:1%;width:4%;transform:rotate(-30deg)}
+.slime-splash i:nth-child(3){right:0;top:5%;width:6%;transform:rotate(-24deg)}
+.slime-splash i:nth-child(4){right:7%;bottom:2%;width:4%;transform:rotate(29deg)}
+@keyframes slime-impact{0%{opacity:0;transform:scale(.28,.68)}66%{opacity:1;transform:scale(1.07,.91)}100%{opacity:1;transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.slime-splash{animation:none}}
+header .brand-subtitle{margin-top:4px}
 #appearance{flex:none}
-@media(max-width:360px){header{gap:6px}#appearance{padding-inline:8px}.slime-brand{padding-inline:8px}}
 </style>
 <script>
 try{
@@ -89,7 +94,7 @@ try{
 </head>
 <body>
 <div class="shell">
-<header><div><h1 class="slime-brand">Meleka Games</h1><p class="brand-subtitle">Escolha seu jogo</p></div><button id="appearance" class="control" type="button" aria-label="Configurar aparência">⚙ Temas</button></header>
+<header><div><div class="slime-brand"><h1>Meleka Games</h1><span class="slime-splash" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div><p class="brand-subtitle">Escolha seu jogo</p></div><button id="appearance" class="control" type="button" aria-label="Configurar aparência">⚙ Temas</button></header>
 <label class="search"><svg width="20" height="20" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg><input id="query" type="search" aria-label="Buscar jogo" placeholder="Buscar jogo"></label>
 <nav id="filters" aria-label="Filtrar por gênero"></nav>
 <main id="catalog">
