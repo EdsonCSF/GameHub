@@ -19,8 +19,8 @@
         <button class="menu-btn" onclick="openRanking()"><i>♛</i><span>RANKING</span></button>
       </div>
     </div>
-    <footer class="menu-footer"><span>ELEMENTOS CONSTROEM O SEU DESTINO</span></footer>
-    <div id="menu-version">v9.0• Ascensão Elemental</div>
+    <footer class="menu-footer"><span>TRÍADE DOS GUARDIÕES</span></footer>
+    <div id="menu-version">v10.0 • Tríade dos Guardiões</div>
   </div>
 </div>
 
@@ -62,11 +62,12 @@
     <div id="totem-wrap">
       <div id="totem-glow"></div>
       <div id="totem-tilt">
-        <div id="totem-stack"></div><div id="empty-tower">Cada peça é um novo destino</div>
+        <div id="totem-stack"></div><div id="empty-tower">Jogue o dado para erguer o primeiro bloco</div>
         <div id="totem-base"></div>
       </div>
     </div>
   </div>
+  <button id="trail" onclick="explainTrail()" aria-label="Progresso até o guardião e guia das afinidades"><span class="trail-heading"><strong id="trail-name"></strong><b id="trail-count"></b></span><span id="affinities"><span></span><span></span><span></span></span></button>
   <div id="bottom-zone">
     <div id="phase-label">Mecânica: Dados 🎲</div>
     <div id="streak-display"></div>
@@ -102,7 +103,7 @@
   <header class="boss-header"><div><span class="eyebrow">GUARDIÃO DA ASCENSÃO</span><h2 id="battle-name"></h2></div><button class="round-control" onclick="pauseBattle()" aria-label="Pausar batalha">Ⅱ</button></header>
   <div class="battle-life"><div><span id="battle-hp"></span><span id="battle-floor"></span></div><progress id="battle-progress" value="1" max="1"></progress></div>
   <div class="battle-field"><div id="boss-portrait" role="img" aria-label="Retrato do guardião"></div><div id="boss-tower" aria-label="Torre de blocos do guardião"></div><div id="battle-feedback" aria-live="polite"></div></div>
-  <footer class="battle-controls"><div id="battle-rewards"></div><div id="battle-mechanic"></div><button id="battle-action" onclick="attackBoss()">ATACAR</button><button id="battle-return" hidden onclick="finishBossVictory()">CONTINUAR ASCENSÃO</button></footer>
+  <footer class="battle-controls"><div id="battle-rewards"></div><div id="tactics"><p id="intent"></p><div><button onclick="selectWard(false)">⚔ Investida</button><button onclick="selectWard(true)">◇ Guarda</button></div></div><div id="battle-mechanic"></div><button id="battle-action" onclick="attackBoss()">ATACAR</button><button id="battle-return" hidden onclick="finishBossVictory()">CONTINUAR ASCENSÃO</button></footer>
 </section>
 
 <div id="screen-upgrades" class="screen">

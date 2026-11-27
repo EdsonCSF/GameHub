@@ -763,7 +763,7 @@ const BOSSES = [
 
 /* Cap de recuperação de estabilidade ao derrotar boss (máx 50) */
 function applyBossStabReward(reward){
-  const capped=Math.min(50, reward);
+  const capped=Math.max(0,Math.min(50,reward,G.maxStab-G.stab));
   G.stab=Math.min(G.maxStab, G.stab+capped);
   return capped;
 }
@@ -822,7 +822,7 @@ function newState(){
     springOn:false,ancientOn:false,rainbowOn:false,
     upgrades:{},
     pieces:[],
-    piecesSinceBoss:0,bossThreshold:40,
+    piecesSinceBoss:0,bossThreshold:8,ward:false,charges:[0,0,0],
     turn:0,
     timingConsec:0,
     lastPhase:1,
@@ -956,7 +956,7 @@ function openHowTo(){
       <strong>Power Meter:</strong> Encha a barra roxa com acertos. Em 100%, libera bônus especial!
     </div></div>
     <div class="htp-step"><div class="htp-num">6</div><div class="htp-text">
-      <strong>Bosses:</strong> A cada 40 acertos, um boss aparece. Derrote-o com acertos perfeitos!
+      <strong>Bosses:</strong> O primeiro guardião chega após 8 acertos. Cada vitória aumenta o intervalo em 2, até 24. Alterne entre Investida e Guarda antes de agir.
     </div></div>
     <div class="htp-step"><div class="htp-num">7</div><div class="htp-text">
       <strong>Recursos:</strong> Cada peça dropa Madeira 🪵, Pedra 🪨, Ouro 🪙 ou Cristal 💎. Use-os na Loja!
@@ -1934,8 +1934,8 @@ function onSuccess(src,quality,stabFixed){
   G.power=Math.min(100,G.power+powerGain);
   if(G.power>=100&&!G.powerReady){
     G.powerReady=true;
-    showEventToast('🔮 POWER METER PRONTO!');
-    notify('🔮 Power Meter cheio! Toque para liberar!');
+    showEventToast('🔮 Poder carregado!');
+    notify('🔮 Power Meter cheio! Bônus automático de altura!');
     SFX.power();
   }
   updatePowerUI();
@@ -1943,6 +1943,7 @@ function onSuccess(src,quality,stabFixed){
   if(G.bossActive){
     const boss=BOSSES[G.bossIdx%BOSSES.length];
     let dmg=quality==='perfect'?3:quality==='strong'?2.2:1.8;
+    dmg*=G.ward?0.85:(G.bossHp<=G.bossMaxHp/2?1.5:1.2);
  dmg*=1+Math.min(0.4,((G.level||1)-1)*0.01);
     // Redução de dano
     if(boss.damageReduction) dmg=dmg*(1-boss.damageReduction);
@@ -1963,6 +1964,7 @@ function onSuccess(src,quality,stabFixed){
 
   const pt=choosePiece(quality);
   applyPieceRarityEffect(pt);
+  chargeStone(pt);
 
   const crit=Math.random()<(upLv('crit')*.10 + G._tempLuckBoost);
   if(crit) G.critHits++;
@@ -2102,8 +2104,8 @@ function onFail(){
   // DURANTE BOSS: NÃO perde estabilidade. Perde ALTURA no lugar.
   if(G.bossActive){
     const boss=BOSSES[G.bossIdx%BOSSES.length];
-    const healAmt=boss.hpRegenOnFail||1;
-    const heightLoss=boss.heightLoss||5;
+    const healAmt=G.ward?0:boss.hpRegenOnFail||1;
+    const heightLoss=Math.min(G.height,bossPenalty(boss));
     G.bossHp=Math.min(G.bossMaxHp,G.bossHp+healAmt);
     // Perde altura (não estabilidade)
     G.height=Math.max(0, G.height-heightLoss);
@@ -2374,6 +2376,7 @@ function checkBossSpawn(){
     const boss=BOSSES[bossIdx];
     G.bossActive=true;
     G.bossIdx=bossIdx;
+    G.ward=false;
     const hpMult=(G._progBossHpMult||1) * getDifficultyMult(G.height);
     G.bossHp=Math.ceil(boss.hp*hpMult);
     G.bossMaxHp=Math.ceil(boss.hp*hpMult);
@@ -2404,6 +2407,7 @@ function defeatBoss(){
  awardXP(80+G.bossDefeated.length*12);
   const boss=BOSSES[G.bossIdx%BOSSES.length];
   G.bossDefeated.push(G.bossIdx);
+  G.bossThreshold=Math.min(24,8+G.bossDefeated.length*2);
   // Marca o último boss derrotado — seu emoji aparece nas próximas peças
   G.lastBossEmoji=boss.emoji;
   G.bossActive=false;
@@ -2426,7 +2430,7 @@ function defeatBoss(){
   
   showEventToast('🎉 '+boss.name+' derrotado!');
   SFX.bossDefeat();
-  addLog('🎉 '+boss.name+' derrotado! +'+boss.stabReward+'⚖️ +'+boss.coinReward+'💰 +1✨','e');
+  addLog('🎉 '+boss.name+' derrotado! +'+healed+'⚖️ +'+boss.coinReward+'💰 +1✨','e');
   updateBossUI();
   updateStreakDisplay();
   updateStreakAura();
@@ -2845,8 +2849,7 @@ function reviveGame(){
     const boss=BOSSES[G.bossIdx%BOSSES.length];
     if(boss){
       G.bossActive=true;
-      G.bossHp=boss.hp;
-      G.bossMaxHp=boss.hp;
+      G.bossHp=G.bossMaxHp||boss.hp;
       updateBossUI();
       showEventToast('🐉 '+boss.name+' voltou com vida cheia!');
       addLog('🐉 Boss retornou com vida cheia!','e');
@@ -3677,7 +3680,7 @@ openDiceModal=function(){
 };
 function exportProgress(){
  saveGame();
- const blob=new Blob([JSON.stringify({version:7,G,gameLog})],{type:'application/json'});
+ const blob=new Blob([JSON.stringify({version:10,G,gameLog})],{type:'application/json'});
  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Totem-progresso.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),5000);
 }
 function importProgress(){
@@ -3772,11 +3775,15 @@ function resolvePiece(id){
 }
 function artIndex(piece){return piece.id.startsWith('boss-')?12+(BOSS_THEMES[piece.id.slice(5)]||0):(ELEMENT_ART[piece.id]??0);}
 function spriteMarkup(piece,extra=''){
- const i=artIndex(piece);return '<span class="stone-sprite '+(i>=12?'boss-stone ':'')+extra+'" role="img" aria-label="'+esc(piece.name)+'" style="--col:'+i%4+';--row:'+Math.floor(i/4)+'"></span>';
+ const affinity=AFFINITIES.find(a=>a.ids.includes(piece.id));
+ const i=artIndex(piece);return '<span data-rune="'+esc(piece.rune)+'" class="stone-sprite '+(i>=12?'boss-stone ':'')+extra+'" role="img" aria-label="'+esc(piece.name)+'" style="--tone:'+(affinity?.color||'#ffe1a3')+';--col:'+i%4+';--row:'+Math.floor(i/4)+'"></span>';
 }
 const storedPlayerName=getPlayerName;
 getPlayerName=function(){return G?.playerName||storedPlayerName();};
 function normalizeV8(){
+ if(!Array.isArray(G.charges)||G.charges.length!==3) G.charges=[0,0,0];
+ G.charges=G.charges.map(n=>Number.isInteger(n)&&n>=0&&n<3?n:0);
+ G.bossThreshold=Math.min(24,8+(G.bossDefeated||[]).length*2);
  if(!G.playerName)G.playerName=storedPlayerName();
  if(!G.elementCounts||typeof G.elementCounts!=='object')G.elementCounts={};
  if(!Array.isArray(G.pieces))G.pieces=[];
@@ -3802,9 +3809,9 @@ function beginNamedRun(){
  const name=(document.getElementById('new-player-name').value||'Jogador').trim().slice(0,24)||'Jogador';
  if(G.hasRun)updateRanking(G.playerName,G.bestHeight,G.prestige,G.bossDefeated.length);
  closeModal();savePlayerName(name);battleVictory=false;clearTimeout(victoryTimer);startNewGame();
- G.playerName=name;G.hasRun=true;saveGame();updateMenuRun();syncBattle();
+ G.playerName=name;G.hasRun=true;saveGame();updateMenuRun();syncBattle();enterTemple();
 }
-function resumeRun(){if(!G.hasRun)return;continuarJogo();syncBattle();}
+function resumeRun(){if(!G.hasRun)return;continuarJogo();syncBattle();if(G.bossActive)revealGuardian();else enterTemple();}
 function continuarOuJogar(){G.hasRun?resumeRun():newRunPrompt();}
 function openRanking(){
  if(G.hasRun)updateRanking(G.playerName,G.bestHeight,G.prestige,G.bossDefeated.length);
@@ -3850,7 +3857,7 @@ updateJourney=function(){
  const level=document.getElementById('level-label'),xp=document.getElementById('xp-label'),bar=document.getElementById('xp-progress');
  if(level)level.textContent='NÍVEL '+(G.level||1);if(xp)xp.textContent=(G.xp||0)+' / '+xpNeeded(G.level||1)+' XP';
  if(bar){bar.value=G.xp||0;bar.max=xpNeeded(G.level||1);}
- renderEventSide();fitTower();
+ renderEventSide();fitTower();renderTrail();
  const side=document.getElementById('combo-side');
  if(side){side.hidden=!G.streak&&!G.bestStreak;side.innerHTML='<span class="side-label">SEQUÊNCIA</span><span class="side-value">'+G.streak+'</span><span class="side-note">Recorde<br>'+G.bestStreak+'</span>';}
  syncBattle();
@@ -3892,7 +3899,7 @@ function syncBattle(){
 const v8BossSpawn=checkBossSpawn;
 checkBossSpawn=function(){
  const active=G.bossActive;v8BossSpawn();
- if(!active&&G.bossActive){G.savedTower=G.pieces.map(p=>({...p}));G.battlePieces=[];battleVictory=false;lastBattleId=null;renderBossTower();syncBattle();saveGame();}
+ if(!active&&G.bossActive){G.savedTower=G.pieces.map(p=>({...p}));G.battlePieces=[];battleVictory=false;lastBattleId=null;renderBossTower();syncBattle();queueBattleScene("entrance");saveGame();}
 };
 const v8BossUI=updateBossUI;
 updateBossUI=function(){v8BossUI();syncBattle();};
@@ -3900,11 +3907,13 @@ const v8DefeatBoss=defeatBoss;
 defeatBoss=function(){
  battleVictory=true;v8DefeatBoss();G.piecesSinceBoss=0;G.savedTower=[];
  document.getElementById('battle-feedback').textContent='VITÓRIA';syncBattle();saveGame();
- clearTimeout(victoryTimer);victoryTimer=setTimeout(finishBossVictory,2800);
+ clearTimeout(victoryTimer);victoryTimer=setTimeout(finishBossVictory,3600);
 };
 function finishBossVictory(){
  if(window.rollBusy){clearTimeout(victoryTimer);victoryTimer=setTimeout(finishBossVictory,250);return;}
- battleVictory=false;clearTimeout(victoryTimer);document.getElementById('battle-feedback').textContent='';syncBattle();renderTotem();updateActionButton();saveGame();
+ if(!battleVictory)return;
+ const origin=document.getElementById('boss-portrait').getBoundingClientRect();
+ battleVictory=false;clearTimeout(victoryTimer);document.getElementById('battle-feedback').textContent='';syncBattle();renderTotem();updateActionButton();saveGame();landTrophy(origin);
 }
 function attackBoss(){if(G.bossActive&&!battleVictory)handleAction();}
 function pauseBattle(){if(window.rollBusy)return;exitToMenu();syncBattle();updateMenuRun();}
@@ -3917,10 +3926,7 @@ onSuccess=function(src,quality,stab){const boss=G.bossActive;v8OnSuccess(src,qua
 const v8OnFail=onFail;
 onFail=function(){const boss=G.bossActive;v8OnFail();if(boss)bossImpact(true);syncBattle();};
 function bossImpact(fail){
- const tower=document.getElementById('boss-tower');tower.classList.remove('hit');void tower.offsetWidth;tower.classList.add('hit');
- if(battleVictory)return;
- const feedback=document.getElementById('battle-feedback');feedback.textContent=fail?'DEFESA DO GUARDIÃO':'IMPACTO';feedback.style.color=fail?'#ea8a93':'#ffd591';
- setTimeout(()=>{if(!battleVictory)feedback.textContent='';},700);
+ queueBattleScene(battleVictory?'victory':fail?'counter':'strike');
 }
 // Use the original modal opening routine: battle info already has its own screen.
 openModal=function(html){originalOpenModal(html);};
@@ -4000,7 +4006,7 @@ const inventoryV9=renderInventory;
 renderInventory=function(){inventoryV9();const nav=document.querySelector('#inv-body .inventory-tabs');if(nav)nav.insertAdjacentHTML('beforeend','<button class="'+(inventoryTab==='bosses'?'active':'')+'" onclick="chooseInventoryTab(\'bosses\')">BOSSES</button>');};
 
 const syncV9=syncBattle;
-syncBattle=function(){syncV9();const overlay=document.getElementById('boss-overlay');if(!overlay||overlay.hidden)return;const theme=BOSS_THEMES[BOSSES[G.bossIdx%BOSSES.length].id]||0;overlay.dataset.family=String(theme);const bg=document.getElementById('boss-backdrop');bg.style.backgroundPosition=(theme%2*100)+'% '+(Math.floor(theme/2)*100)+'%';if(G.phase===4&&!battleVictory)document.getElementById('battle-mechanic').textContent='Selos • encontre o símbolo indicado';};
+syncBattle=function(){syncV9();const overlay=document.getElementById('boss-overlay');if(!overlay||overlay.hidden)return;const theme=BOSS_THEMES[BOSSES[G.bossIdx%BOSSES.length].id]||0;overlay.dataset.family=String(theme);const bg=document.getElementById('boss-backdrop');bg.style.backgroundPosition=(theme%2*100)+'% '+(Math.floor(theme/2)*100)+'%';renderTactics();if(G.phase===4&&!battleVictory)document.getElementById('battle-mechanic').textContent='Selos • encontre o símbolo indicado';};
 
 let sealState=null,sealTimer=null;
 function openSealModal(){
@@ -4024,7 +4030,7 @@ function finishSeal(won){
  closeModal();checkPhaseShift();checkAchievements();saveGame();
 }
 const closeV9=closeModal;
-closeModal=function(){if(window.rollBusy)return;clearInterval(sealTimer);sealState=null;closeV9();};
+closeModal=function(){if(window.rollBusy)return;clearInterval(sealTimer);sealState=null;closeV9();flushBattleScene();};
 const buttonV9=updateActionButton;
 updateActionButton=function(){buttonV9();if(G.phase===4&&!G.bossActive){const b=document.getElementById('action-btn');b.className='btn-seq';b.textContent='✦ Selos Elementais';}};
 const modalV9=openModal;
@@ -4049,4 +4055,116 @@ const journeyV9=updateJourney;updateJourney=function(){journeyV9();updateDanger(
 const goV9=goScreen;goScreen=function(id){goV9(id);updateDanger();};
 const eventV9=renderEventSide;
 renderEventSide=function(){eventV9();const weather=document.getElementById('event-weather');if(weather){weather.classList.toggle('event-intense',!!G.eventId);if(G.eventId&&weather.dataset.enriched!==G.eventId){weather.dataset.enriched=G.eventId;for(let i=0;i<12;i++){const p=document.createElement('span');p.className='weather-particle';p.textContent=G.eventId==='rain'?'':G.eventId==='spring'?'✿':'✧';p.style.cssText='--left:'+((i*67+8)%100)+'%;--duration:'+(2+i%3)+'s;--delay:-'+i/3+'s;--size:'+(9+i%10)+'px;';weather.appendChild(p);}}if(!G.eventId)weather.dataset.enriched='';}};
-window.addEventListener('load',()=>{addAtmosphere(document.getElementById('screen-menu'),'menu-particles',22);addAtmosphere(document.getElementById('boss-overlay'),'battle-particles',30);addAtmosphere(document.getElementById('arena'),'danger-debris',12);document.getElementById('menu-version').textContent='v9 • Ascensão Elemental';});
+window.addEventListener('load',()=>{addAtmosphere(document.getElementById('screen-menu'),'menu-particles',22);addAtmosphere(document.getElementById('boss-overlay'),'battle-particles',30);addAtmosphere(document.getElementById('arena'),'danger-debris',12);document.getElementById('menu-version').textContent='v10.0 • Tríade dos Guardiões';});
+
+// Every three blocks of one affinity pay out, even across different challenges.
+const AFFINITIES=[
+ {name:'Brasa',color:'#ffab70',ids:['ember','gold','chaos','light'],reward:'+12 moedas'},
+ {name:'Raiz',color:'#91e6af',ids:['stone','forest','ancient','divine'],reward:'+8 estabilidade'},
+ {name:'Maré',color:'#8cdafa',ids:['water','wind','crystal','shadow'],reward:'+12 XP'}
+];
+function chargeStone(piece){
+ const i=AFFINITIES.findIndex(a=>a.ids.includes(piece.id));
+ if(i<0)return;
+ G.charges[i]++;
+ if(G.charges[i]<3)return;
+ G.charges[i]=0;
+ if(i===0){G.coins+=12;G.totalCoins+=12;}
+ if(i===1)G.stab=Math.min(G.maxStab,G.stab+8);
+ if(i===2)awardXP(12);
+ const a=AFFINITIES[i];
+ spawnFloat(a.name+' • '+a.reward,a.color,-25);
+ addLog(a.name+' completa • '+a.reward,'a');
+}
+function renderTrail(){
+ const trail=document.getElementById('trail');
+ const boss=BOSSES[G.bossDefeated.length%BOSSES.length];
+ document.getElementById('trail-name').textContent=boss.name;
+ document.getElementById('trail-count').textContent=G.piecesSinceBoss+' / '+G.bossThreshold;
+ trail.style.setProperty('--route',Math.min(100,G.piecesSinceBoss/G.bossThreshold*100)+'%');
+ document.querySelectorAll('#affinities span').forEach((el,i)=>{
+  el.textContent=AFFINITIES[i].name+' '+G.charges[i]+'/3';
+  el.style.setProperty('--tone',AFFINITIES[i].color);
+ });
+}
+function explainTrail(){
+ openModal('<h2>Tríade elemental</h2><p class="msub">Cada bloco colocado carrega sua afinidade. Complete três cargas para receber a recompensa. As cargas ficam guardadas entre turnos.</p>'+
+ AFFINITIES.map(a=>'<p class="affinity-guide" style="--tone:'+a.color+'"><strong>'+a.name+' · '+a.reward+'</strong><br>'+a.ids.map(id=>resolvePiece(id).name).join(' · ')+'</p>').join('')+
+ '<button class="modal-close" onclick="closeModal()">Voltar</button>');
+}
+function bossPenalty(boss){
+ return G.ward?Math.ceil(boss.heightLoss/3):boss.heightLoss;
+}
+function selectWard(ward){
+ if(!G.bossActive||battleVictory||modalOpen||window.rollBusy)return;
+ G.ward=ward;renderTactics();saveGame();
+}
+function renderTactics(){
+ const panel=document.getElementById('tactics');
+ panel.hidden=battleVictory;
+ if(battleVictory)return;
+ const boss=BOSSES[G.bossIdx%BOSSES.length],exposed=G.bossHp<=G.bossMaxHp/2;
+ document.getElementById('boss-overlay').classList.toggle('exposed',exposed);
+ panel.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-pressed',String(Boolean(i)===!!G.ward)));
+ document.getElementById('intent').textContent=G.ward?'Guarda • erro custa '+bossPenalty(boss)+' de altura, sem cura inimiga':(exposed?'Brecha aberta • dano ×1,5':'Investida • dano ×1,2')+' • erro custa '+bossPenalty(boss)+' de altura';
+}
+
+let pendingBattleScene=null;
+function motionOK(){return !matchMedia('(prefers-reduced-motion: reduce)').matches;}
+function animateScene(el,frames,duration){
+ if(el&&motionOK())return el.animate(frames,{duration,easing:'cubic-bezier(.22,.65,.25,1)'});
+}
+function enterTemple(){
+ animateScene(document.getElementById('arena'),[{opacity:.2,scale:'1.06',filter:'brightness(.45)'},{opacity:1,scale:'1',filter:'brightness(1)'}],760);
+ animateScene(document.getElementById('bottom-zone'),[{translate:'0 20px',opacity:.4},{translate:'0 0',opacity:1}],480);
+}
+function revealGuardian(){
+ const portrait=document.getElementById('boss-portrait');
+ animateScene(document.getElementById('boss-backdrop'),[{filter:'brightness(.15)',scale:'1.14'},{filter:'brightness(1)',scale:'1'}],850);
+ animateScene(portrait,[{opacity:0,translate:'0 -24%',scale:'.56',filter:'brightness(.25)'},{opacity:1,translate:'0 4%',scale:'1.06',offset:.72},{translate:'0 0',scale:'1'}],840);
+ animateScene(document.querySelector('.boss-header'),[{translate:'0 -18px',opacity:0},{translate:'0 0',opacity:1}],560);
+}
+function queueBattleScene(scene){pendingBattleScene=scene;if(!modalOpen)flushBattleScene();}
+function flushBattleScene(){
+ const scene=pendingBattleScene;if(!scene||modalOpen)return;
+ pendingBattleScene=null;
+ if(curScreen!=='game'||document.getElementById('boss-overlay').hidden)return;
+ if(scene==='entrance'){revealGuardian();return;}
+ const field=document.querySelector('.battle-field'),portrait=document.getElementById('boss-portrait'),tower=document.getElementById('boss-tower');
+ const fail=scene==='counter',win=scene==='victory';
+ castGuardianRunes(field,portrait,tower,fail);
+ if(!fail&&tower.lastElementChild)animateScene(tower.lastElementChild,[{opacity:.2,translate:'0 -48%',scale:'.85'},{opacity:1,translate:'0 3px',scale:'1.08 .9',offset:.73},{translate:'0 0',scale:'1'}],530);
+ field.classList.remove('struck','counter');void field.offsetWidth;field.classList.add(fail?'counter':'struck');
+ animateScene(portrait,win?[{scale:'1.05',filter:'brightness(2)'},{scale:'.74',opacity:.25}]:fail?[{translate:'0 -5%',scale:'.95'},{translate:'0 18%',scale:'1.16',offset:.48},{translate:'0 0',scale:'1'}]:[{rotate:'0deg'},{rotate:'-6deg',translate:'0 -5%',filter:'brightness(1.8)',offset:.24},{rotate:'2deg',offset:.62},{rotate:'0deg'}],win?720:460);
+ animateScene(tower,fail?[{translate:'0 0'},{translate:'-8px 3px'},{translate:'6px 1px'},{translate:'0 0'}]:[{translate:'0 5%'},{translate:'0 -9%'},{translate:'0 0'}],440);
+ const label=document.getElementById('battle-feedback');label.textContent=win?'VITÓRIA':fail?'CONTRA-ATAQUE':'IMPACTO';
+ label.style.color=fail?'#ffa390':'#ffe0a2';
+ animateScene(label,[{opacity:0,scale:'.74'},{opacity:1,scale:'1.12',offset:.35},{opacity:1,scale:'1'}],390);
+ if(!win)setTimeout(()=>{if(label.textContent===(fail?'CONTRA-ATAQUE':'IMPACTO'))label.textContent='';},830);
+}
+function landTrophy(origin){
+ const target=document.querySelector('#totem-stack .stone-sprite:last-child');
+ if(!target||!origin.width||!motionOK())return;
+ const end=target.getBoundingClientRect(),dx=origin.x+origin.width/2-end.x-end.width/2,dy=origin.y+origin.height/2-end.y-end.height/2;
+ const flight=animateScene(target,[{translate:dx+'px '+dy+'px',scale:'1.5',filter:'brightness(1.8)',opacity:.6},{translate:'0 -25px',scale:'1.1',opacity:1,offset:.72},{translate:'0 3px',scale:'1 .94',offset:.94},{translate:'0 0',scale:'1'}],820);
+ if(flight)flight.onfinish=()=>animateScene(document.getElementById('totem-base'),[{filter:'brightness(2.3)',scale:'1.06'},{filter:'brightness(1)',scale:'1'}],310);
+}
+
+// Project the four guardian families along the actual phone/desktop arena geometry.
+function castGuardianRunes(field,portrait,tower,counter){
+ if(!motionOK())return;
+ const family=BOSS_THEMES[BOSSES[G.bossIdx%BOSSES.length].id]||0;
+ const sigils=['◆','ϟ','☾','✧'],colors=['#ff9152','#9defff','#cc9dff','#ffdc88'];
+ const box=field.getBoundingClientRect(),face=portrait.getBoundingClientRect(),base=tower.getBoundingClientRect();
+ const enemy={x:face.left+face.width*.5-box.left,y:face.top+face.height*.49-box.top};
+ const player={x:base.left+base.width*.5-box.left,y:Math.min(base.top-box.top,box.height*.86)};
+ const [start,end]=counter?[enemy,player]:[player,enemy];
+ for(let i=-2;i<=2;i++){
+  const rune=document.createElement('i');rune.className='spell-fragment';rune.ariaHidden='true';rune.textContent=sigils[family];
+  rune.style.color=colors[family];rune.style.left=start.x+'px';rune.style.top=start.y+'px';field.appendChild(rune);
+  const dx=end.x-start.x,dy=end.y-start.y;
+  const arc=[i*18,(i%2?1:-1)*28,i*32,i*12][family];
+  const movement=rune.animate([{transform:'translate(0,0) scale(.4)',opacity:0},{opacity:1,offset:.16},{transform:'translate('+(dx*.5+arc)+'px,'+(dy*.5-Math.abs(i)*8)+'px) rotate('+(i*32)+'deg)',offset:.52},{transform:'translate('+dx+'px,'+dy+'px) scale(.4)',opacity:0}],{duration:380+Math.abs(i)*65,delay:35*Math.abs(i),fill:'both',easing:'ease-in-out'});
+  movement.onfinish=()=>rune.remove();
+ }
+}

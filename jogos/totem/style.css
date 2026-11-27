@@ -1300,3 +1300,29 @@ button{touch-action:manipulation}button:focus-visible{outline:3px solid #78e3ff;
 #danger-debris{display:none}.danger-mode #danger-debris{display:block;color:#e1a36a}.danger-mode #totem-stack{animation:danger-shiver .24s infinite alternate}.danger-mode #arena::after,.danger-mode#boss-overlay::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:30;box-shadow:inset 0 0 48px #e83b3970;animation:danger-pulse .9s infinite alternate}.danger-mode #stab-row{background:#92372f66;box-shadow:0 0 12px #ff544788}.danger-mode #boss-tower{filter:drop-shadow(0 0 13px #f06d39)}
 @keyframes danger-shiver{from{translate:-1px 0}to{translate:1.5px 1px}}@keyframes danger-pulse{to{box-shadow:inset 0 0 75px #e83b3990}}
 @media(prefers-reduced-motion:reduce){.atmosphere span,.danger-mode #totem-stack,#boss-backdrop,.event-intense::after,.boss-depth-near{animation:none!important}.danger-mode #arena::after,.danger-mode#boss-overlay::after{animation:none}.atmosphere{display:none}}
+
+/* Tríade dos Guardiões */
+#trail{flex:none;display:grid;gap:5px;width:100%;padding:6px 16px 9px;color:#f6dfac;text-align:left;border:0;border-top:1px solid #756044;background:linear-gradient(90deg,#ecbe73 var(--route),#364047 var(--route)) bottom/100% 2px no-repeat,#101923;cursor:pointer}
+.trail-heading,#affinities{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.trail-heading{font:600 13px Georgia,serif}.trail-heading b{font:600 10px system-ui;color:#e3c089}
+#affinities span{color:var(--tone);font:600 10px system-ui;letter-spacing:.04em}
+.affinity-guide{text-align:left;border-left:3px solid var(--tone);padding:6px 12px;color:#d7dae4;font:13px/1.6 system-ui}.affinity-guide strong{color:var(--tone)}
+#intent{font:600 12px/1.4 system-ui;color:#f2dbab;margin:5px 0}
+#tactics>div{display:flex;gap:6px;margin:5px auto 7px;max-width:400px}
+#tactics button{flex:1;min-height:34px;background:#192033;border:1px solid #596377;color:#cbd7de;border-radius:8px;font-weight:700}
+#tactics button[aria-pressed=true]{color:#fff0cb;background:#473125;border-color:#edb76a}
+#boss-overlay.exposed #boss-portrait{filter:drop-shadow(0 0 14px #ff984f)}
+#totem-stack .arrive::after,#boss-tower .arrive::after{content:"";position:absolute;pointer-events:none;left:12%;right:12%;bottom:4%;height:17%;border:2px solid #ffd483;border-radius:50%;animation:rune-impact .52s ease-out both}
+@keyframes rune-impact{from{transform:scale(.3);opacity:1}to{transform:scale(1.65);opacity:0}}
+@media(prefers-reduced-motion:reduce){.arrive::after{display:none}}
+#totem-stack .stone-sprite:not(.boss-stone)::before{content:attr(data-rune);position:absolute;right:12%;bottom:14%;display:grid;place-items:center;width:18%;aspect-ratio:1;border-radius:50%;border:1px solid var(--tone);background:#172126df;color:var(--tone);font:700 calc(var(--tile)*.11) Georgia;text-shadow:0 0 5px currentColor}
+#totem-stack .arrive::after{border-color:var(--tone)}
+.battle-field::after{content:"";position:absolute;pointer-events:none;inset:4% 4% 20%;opacity:0}
+.battle-field.struck::after{background:linear-gradient(132deg,transparent 45%,#ffd28370 49%,#fff5cf 50%,transparent 52%);animation:strike-cut .36s ease-out}
+.battle-field.counter::after{background:radial-gradient(ellipse,#d7696026,transparent 60%);border-bottom:3px solid #fa7769;border-radius:50%;animation:counter-wave .42s ease-out}
+@keyframes strike-cut{from{opacity:1;transform:scale(.65)}to{opacity:0;transform:scale(1.1)}}
+@keyframes counter-wave{from{opacity:.95;transform:scale(.5)}to{opacity:0;transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.battle-field::after{display:none}}
+#totem-stack .arrive,#boss-tower .arrive{animation:stone-descent .65s both}
+@keyframes stone-descent{0%{opacity:0;translate:0 -85%;rotate:-9deg;scale:.83}38%{opacity:1;filter:brightness(1.45)}71%{translate:0 2px;rotate:1deg;scale:1.06 .92}84%{translate:0 -6px;rotate:-1deg;scale:.98 1.03}100%{translate:0 0;rotate:0deg;scale:1}}
+.spell-fragment{position:absolute;z-index:3;pointer-events:none;font:700 clamp(16px,4vw,26px) Georgia;text-shadow:0 0 5px currentColor,0 0 14px currentColor}
