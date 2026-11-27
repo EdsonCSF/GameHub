@@ -69,6 +69,14 @@ dialog h2{margin-top:0}
 dialog label{display:grid;gap:6px;margin:0 0 14px}
 [hidden]{display:none!important}
 @media(prefers-reduced-motion:reduce){.game-card{animation:none;transition:none}}
+.slime-brand{position:relative;display:inline-grid;place-items:center;isolation:isolate;padding:16px 12px 21px;color:#153306}
+.slime-brand::before,.slime-brand::after{content:"";position:absolute;pointer-events:none;z-index:-1}
+.slime-brand::before{inset:3px 1px 6px;transform:rotate(-3deg);border-radius:31% 48% 24% 42% / 54% 40% 56% 41%;background:radial-gradient(ellipse at 24% 16%,#f4ffb9 0 3%,transparent 13%),radial-gradient(circle at 85% 38%,#d5ff73 0 2%,#7fbd20 3%,transparent 5%),radial-gradient(circle at 13% 70%,#c7fb55 0 2%,#68a919 3%,transparent 5%),radial-gradient(ellipse at 43% 17%,#dcff7b,#9bea32 57%,#4b9517);border:2px solid #78c833;box-shadow:inset 0 4px 5px #f4ffb5b0,inset 0 -8px 10px #346f1e88,0 4px 0 #2d601b,0 0 17px #92ed483b}
+.slime-brand::after{width:13px;height:23px;left:26%;bottom:0;border-radius:40% 50% 50% 55%;background:linear-gradient(100deg,#73c227,#bdff65 38%,#589d21);box-shadow:0 3px 0 #397b21, 42px -5px 0 -3px #78bd29, -31px 3px 0 -4px #80cd31;transform:rotate(9deg)}
+header .slime-brand{font-family:"Exo 2",system-ui,sans-serif;font-size:clamp(23px,6.2vw,56px);white-space:nowrap;background:none;color:#153306;text-shadow:0 1px 0 #eaff8e;letter-spacing:-.055em}
+header .brand-subtitle{margin-top:5px}
+#appearance{flex:none}
+@media(max-width:360px){header{gap:6px}#appearance{padding-inline:8px}.slime-brand{padding-inline:8px}}
 </style>
 <script>
 try{
@@ -81,7 +89,7 @@ try{
 </head>
 <body>
 <div class="shell">
-<header><div><h1>Meleka Games</h1><p>Escolha seu jogo</p></div><button id="appearance" class="control" type="button" aria-label="Configurar aparência">⚙ Temas</button></header>
+<header><div><h1 class="slime-brand">Meleka Games</h1><p class="brand-subtitle">Escolha seu jogo</p></div><button id="appearance" class="control" type="button" aria-label="Configurar aparência">⚙ Temas</button></header>
 <label class="search"><svg width="20" height="20" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg><input id="query" type="search" aria-label="Buscar jogo" placeholder="Buscar jogo"></label>
 <nav id="filters" aria-label="Filtrar por gênero"></nav>
 <main id="catalog">
