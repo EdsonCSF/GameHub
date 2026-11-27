@@ -1,0 +1,23 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>GameHub</title><h1>Página não encontrada</h1><a href="/GameHub/">Voltar ao GameHub</a><script>
+const destinos = {
+  "totem/index.html": "jogos/totem/index.html",
+  "totem/": "jogos/totem/index.html",
+  "Oultimomundo/o-ultimo-mundo-final5_5.html": "jogos/o-ultimo-mundo/o-ultimo-mundo-final5_5.html",
+  "SpiderMerge_v20-1-3.html": "jogos/spider-merge/index.html",
+  "AranhasTycoon_v7.2.html": "jogos/aranhas-tycoon/index.html",
+  "StellaRunner Game OK.html": "jogos/stellar-runner/index.html",
+  "ThekingsTcg/index.html": "jogos/the-kings-tcg/index.html",
+  "ThekingsTcg/": "jogos/the-kings-tcg/index.html",
+  "Stellar miner Game OK.html": "jogos/stellar-miner/index.html",
+  "The kings Dungeon RPG .html": "jogos/the-kings-dungeon/index.html",
+  "Border shoter io.html": "jogos/border-shooter/index.html",
+  "novo enduro Z2.3.html": "jogos/enduro-retro/index.html",
+  "ChopperGame/index.html": "jogos/chopper/index.html",
+  "ChopperGame/": "jogos/chopper/index.html"
+};
+const raiz = '/GameHub/';
+if (location.pathname.startsWith(raiz)) {
+  const antigo = decodeURIComponent(location.pathname.slice(raiz.length));
+  if (Object.hasOwn(destinos, antigo)) location.replace(raiz + destinos[antigo] + location.search + location.hash);
+}
+</script></html>
